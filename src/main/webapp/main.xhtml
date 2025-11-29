@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ace="http://www.icefaces.org/icefaces/components">
+
+<h:head>
+    <title>Проверка точки</title>
+    <h:outputStylesheet library="css" name="styles.css"/>
+    <h:outputScript library="js" name="canvas.js"/>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <div class="header">
+            <h1>Проверка попадания точки в область</h1>
+            <p><strong>Вариант:</strong> 4</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h:form id="pointForm">
+                    <h3>Задайте координаты точки</h3>
+
+                    <!-- Координата X - CommandButton с вариантами -->
+                    <div class="form-group">
+                        <label>Координата X:</label>
+                        <h:panelGroup id="xButtons">
+                            <h:commandButton value="-4" action="#{resultsBean.setX(-4)}"
+                                           styleClass="coord-btn #{resultsBean.x == -4 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="-3" action="#{resultsBean.setX(-3)}"
+                                           styleClass="coord-btn #{resultsBean.x == -3 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="-2" action="#{resultsBean.setX(-2)}"
+                                           styleClass="coord-btn #{resultsBean.x == -2 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="-1" action="#{resultsBean.setX(-1)}"
+                                           styleClass="coord-btn #{resultsBean.x == -1 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="0" action="#{resultsBean.setX(0)}"
+                                           styleClass="coord-btn #{resultsBean.x == 0 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="1" action="#{resultsBean.setX(1)}"
+                                           styleClass="coord-btn #{resultsBean.x == 1 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="2" action="#{resultsBean.setX(2)}"
+                                           styleClass="coord-btn #{resultsBean.x == 2 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="3" action="#{resultsBean.setX(3)}"
+                                           styleClass="coord-btn #{resultsBean.x == 3 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                            <h:commandButton value="4" action="#{resultsBean.setX(4)}"
+                                           styleClass="coord-btn #{resultsBean.x == 4 ? 'selected' : ''}">
+                                <f:ajax render="xButtons graphImage resultsTable" execute="@this"/>
+                            </h:commandButton>
+                        </h:panelGroup>
+                        <div class="current-value">Текущее значение: #{resultsBean.x}</div>
+                    </div>
+
+                    <!-- Координата Y - InputText с валидацией -->
+                    <div class="form-group">
+                        <label for="yInput">Координата Y (от -3 до 5):</label>
+                        <h:inputText id="yInput" value="#{resultsBean.y}"
+                                   required="true"
+                                   requiredMessage="Поле Y обязательно для заполнения"
+                                   styleClass="input-field">
+                            <f:validateDoubleRange minimum="-3.0" maximum="5.0"
+                                                 validatorMessage="Y должен быть в диапазоне от -3 до 5"/>
+                            <f:ajax event="blur" render="yMessage"/>
+                        </h:inputText>
+                        <h:message id="yMessage" for="yInput" styleClass="error-message"/>
+                    </div>
+
+                    <!-- Радиус R - SliderEntry от ICEfaces -->
+                    <div class="form-group">
+                        <label for="rSlider">Радиус R (от 2 до 5, шаг 0.25):</label>
+                        <ace:sliderEntry id="rSlider"
+                                       value="#{resultsBean.r}"
+                                       min="2"
+                                       max="5"
+                                       stepPercent="5"
+                                       length="300"
+                                       showLabels="true">
+                            <f:ajax event="slideEnd" render="graphImage resultsTable rValue"/>
+                        </ace:sliderEntry>
+                        <h:outputText id="rValue" value="Текущее значение: #{resultsBean.r}" styleClass="current-value"/>
+                    </div>
+
+                    <!-- Кнопка проверки -->
+                    <div class="form-group">
+                        <h:commandButton value="Проверить точку"
+                                       action="#{resultsBean.checkPoint}"
+                                       styleClass="btn-primary">
+                            <f:ajax execute="@form" render="graphImage resultsTable messages"/>
+                        </h:commandButton>
+                        <h:commandButton value="Очистить результаты"
+                                       action="#{resultsBean.clearResults}"
+                                       styleClass="btn-secondary">
+                            <f:ajax execute="@this" render="graphImage resultsTable"/>
+                        </h:commandButton>
+                    </div>
+
+                    <h:messages id="messages" globalOnly="true" styleClass="messages"/>
+                </h:form>
+            </div>
+
+            <!-- График -->
+            <div class="graph-section">
+                <h3>Визуализация области</h3>
+                <h:form id="graphForm">
+                    <h:panelGroup id="graphImage">
+                        <canvas id="graphCanvas" width="400" height="400"
+                                onclick="handleCanvasClick(event, #{resultsBean.r})">
+                        </canvas>
+                        <h:graphicImage value="graph.png?r=#{resultsBean.r}&amp;time=#{systemBean.currentTimeMillis}"
+                                      styleClass="graph-img" style="display:none;"/>
+                    </h:panelGroup>
+                    <h:inputHidden id="canvasX" value="#{resultsBean.x}"/>
+                    <h:inputHidden id="canvasY" value="#{resultsBean.y}"/>
+                    <h:commandButton id="canvasSubmit" value="Submit" style="display:none;">
+                        <f:ajax execute="@form" render="graphImage resultsTable"
+                                listener="#{resultsBean.checkPoint}"/>
+                    </h:commandButton>
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Таблица результатов -->
+        <div class="results-section">
+            <h:form id="resultsForm">
+                <h3>Результаты проверки</h3>
+                <h:panelGroup id="resultsTable">
+                    <p:dataTable value="#{resultsBean.results}"
+                               var="result"
+                               emptyMessage="Нет результатов"
+                               styleClass="results-table"
+                               paginator="true"
+                               rows="10">
+
+                        <p:column headerText="X">
+                            <h:outputText value="#{result.x}">
+                                <f:convertNumber maxFractionDigits="3"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Y">
+                            <h:outputText value="#{result.y}">
+                                <f:convertNumber maxFractionDigits="3"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="R">
+                            <h:outputText value="#{result.r}">
+                                <f:convertNumber maxFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Результат">
+                            <h:outputText value="#{result.hit ? 'Попадание' : 'Промах'}"
+                                        styleClass="#{result.hit ? 'hit' : 'miss'}"/>
+                        </p:column>
+
+                        <p:column headerText="Время проверки">
+                            <h:outputText value="#{result.checkTime}">
+                                <f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="Время выполнения (нс)">
+                            <h:outputText value="#{result.executionTime}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+        </div>
+
+        <!-- Навигация -->
+        <div class="navigation">
+            <h:form>
+                <h:commandButton value="Вернуться на главную" action="index" styleClass="btn-secondary"/>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>

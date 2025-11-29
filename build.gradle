@@ -1,19 +1,63 @@
 plugins {
     id 'java'
+    id 'war'
 }
 
 group = 'org.example'
 version = '1.0-SNAPSHOT'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // JSF Implementation (Mojarra)
+    implementation 'org.glassfish:jakarta.faces:2.3.14'
+
+    // Servlet API
+    providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
+    providedCompile 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.3'
+
+    // JSTL
+    implementation 'javax.servlet:jstl:1.2'
+
+    // CDI (Weld)
+    implementation 'org.jboss.weld.servlet:weld-servlet-core:3.1.9.Final'
+
+    // JPA (Hibernate)
+    implementation 'org.hibernate:hibernate-core:5.6.15.Final'
+    implementation 'org.hibernate:hibernate-entitymanager:5.6.15.Final'
+
+    // Oracle JDBC Driver (you may need to add Oracle Maven repo or include jar manually)
+    // For H2 database as alternative for development
+    implementation 'com.h2database:h2:2.2.224'
+
+    // PrimeFaces
+    implementation 'org.primefaces:primefaces:12.0.0'
+
+    // ICEfaces
+    implementation 'org.icefaces:icefaces:4.3.0'
+    implementation 'org.icefaces:icefaces-ace:4.3.0'
+
+    // Bean Validation
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.2.5.Final'
+
+    // EL
+    implementation 'org.glassfish:jakarta.el:3.0.3'
+
+    // Testing
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 test {
     useJUnitPlatform()
+}
+
+war {
+    archiveFileName = 'jsf-point-validation.war'
 }

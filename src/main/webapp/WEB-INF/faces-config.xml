@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+              http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
+              version="2.3">
+
+    <!-- Application Configuration -->
+    <application>
+        <locale-config>
+            <default-locale>ru</default-locale>
+            <supported-locale>en</supported-locale>
+        </locale-config>
+    </application>
+
+    <!-- Managed Bean Configuration -->
+    <managed-bean>
+        <managed-bean-name>resultsBean</managed-bean-name>
+        <managed-bean-class>com.jsf.pointvalidation.beans.ResultsBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>clockBean</managed-bean-name>
+        <managed-bean-class>com.jsf.pointvalidation.beans.ClockBean</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>graphBean</managed-bean-name>
+        <managed-bean-class>com.jsf.pointvalidation.beans.GraphBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>resultsBean</property-name>
+            <value>#{resultsBean}</value>
+        </managed-property>
+    </managed-bean>
+
+    <!-- Navigation Rules -->
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>main</from-outcome>
+            <to-view-id>/main.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/main.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>index</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+</faces-config>
