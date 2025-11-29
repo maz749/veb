@@ -11,22 +11,22 @@
         <class>com.jsf.pointvalidation.entity.PointResult</class>
 
         <properties>
-            <!-- Database connection settings - H2 for development -->
+            <!-- Database connection settings - PostgreSQL -->
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/pointvalidation"/>
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="postgres"/>
+
+            <!-- For H2 Database (development), use these settings instead:
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:~/pointvalidation;AUTO_SERVER=TRUE"/>
             <property name="javax.persistence.jdbc.user" value="sa"/>
             <property name="javax.persistence.jdbc.password" value=""/>
-
-            <!-- For Oracle Database, use these settings instead:
-            <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
-            <property name="javax.persistence.jdbc.user" value="your_username"/>
-            <property name="javax.persistence.jdbc.password" value="your_password"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             -->
 
             <!-- Hibernate settings -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-            <!-- For Oracle: <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/> -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>

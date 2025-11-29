@@ -30,7 +30,7 @@
 
 - **Таблица результатов:**
   - История всех проверок с пагинацией
-  - Сохранение в базу данных Oracle/H2
+  - Сохранение в базу данных PostgreSQL
 
 ## Технологии
 
@@ -39,7 +39,7 @@
 - **CDI 2.0** (Weld)
 - **PrimeFaces 12.0** - компоненты UI
 - **ICEfaces 4.3** - ace:sliderEntry
-- **H2/Oracle Database** - хранение данных
+- **PostgreSQL** - хранение данных
 - **Gradle** - система сборки
 
 ## Структура проекта
@@ -107,24 +107,37 @@ veb/
 
 ## Конфигурация базы данных
 
-### H2 (по умолчанию для разработки)
-База данных создается автоматически при первом запуске в домашней директории пользователя.
+### PostgreSQL (по умолчанию)
 
-### Oracle Database
-Для использования Oracle DB отредактируйте `src/main/resources/META-INF/persistence.xml`:
+Приложение использует PostgreSQL в качестве основной БД. Перед запуском необходимо:
+
+1. Установить PostgreSQL 12 или выше
+2. Создать базу данных:
+
+```sql
+CREATE DATABASE pointvalidation;
+```
+
+3. По умолчанию используются следующие настройки подключения:
+   - **URL**: jdbc:postgresql://localhost:5432/pointvalidation
+   - **User**: postgres
+   - **Password**: postgres
+
+Для изменения настроек отредактируйте `src/main/resources/META-INF/persistence.xml`.
+
+### H2 (альтернатива для разработки)
+
+Для использования H2 вместо PostgreSQL раскомментируйте соответствующие настройки в `persistence.xml`:
 
 ```xml
-<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
-<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
-<property name="javax.persistence.jdbc.user" value="your_username"/>
-<property name="javax.persistence.jdbc.password" value="your_password"/>
-<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
+<property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+<property name="javax.persistence.jdbc.url" value="jdbc:h2:~/pointvalidation;AUTO_SERVER=TRUE"/>
+<property name="javax.persistence.jdbc.user" value="sa"/>
+<property name="javax.persistence.jdbc.password" value=""/>
+<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
 ```
 
-Также добавьте Oracle JDBC драйвер в `build.gradle`:
-```gradle
-implementation 'com.oracle.database.jdbc:ojdbc8:21.1.0.0'
-```
+База данных H2 создается автоматически при первом запуске.
 
 ## Архитектура
 

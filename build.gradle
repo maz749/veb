@@ -31,8 +31,10 @@ dependencies {
     implementation 'org.hibernate:hibernate-core:5.6.15.Final'
     implementation 'org.hibernate:hibernate-entitymanager:5.6.15.Final'
 
-    // Oracle JDBC Driver (you may need to add Oracle Maven repo or include jar manually)
-    // For H2 database as alternative for development
+    // PostgreSQL JDBC Driver
+    implementation 'org.postgresql:postgresql:42.6.0'
+
+    // H2 database for development/testing (optional)
     implementation 'com.h2database:h2:2.2.224'
 
     // PrimeFaces
